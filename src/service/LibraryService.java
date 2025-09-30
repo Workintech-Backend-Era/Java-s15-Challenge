@@ -15,6 +15,7 @@ import repository.UserRepository;
 import util.IdGenerator;
 
 public class LibraryService {
+
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final LoanRepository loanRepository;
@@ -37,14 +38,14 @@ public class LibraryService {
         return book;
     }
 
-    public boolean updateBook(int id, String title, Author author, Category cat, double price) {
+    public boolean updateBook(int id, String newTitle, Author newAuthor, Category newCat, Double newPrice) {
         Book b = bookRepository.getById(id);
         if (b == null)
             return false;
-        b.setTitle(title);
-        b.setAuthor(author);
-        b.setCategory(cat);
-        b.setPrice(price);
+        b.setTitle(newTitle);
+        b.setAuthor(newAuthor);
+        b.setCategory(newCat);
+        b.setPrice(newPrice);
         return true;
     }
 
@@ -110,6 +111,23 @@ public class LibraryService {
 
     }
 
-    //Continue Return book
+    public String returnBook(int memberId, int bookId){
+        Member m = userRepository.getById(memberId);
+        Book b = bookRepository.getById(bookId);
+        if(m==null || b==null) return "Üye veya kitap bulunamadı.";
+        Loan loan = loanRepository.findByBookId(bookId);
+        if(loan == null) return "Bu kitap için aktif ödünç kaydı bulunamadı.";
+        if(loan.getMemberId() != memberId) return "Bu kitabı bu üye almamış.";
+
+        loan.setReturned(true);
+        loanRepository.removeActive(loan.getId());
+        b.setAvailable(true);
+        m.returnBook(bookId);
+
+        Invoice refund = billingService.createInvoice(memberId, -loan.getFeeCharged(), "Refund for loanId:" + loan.getId());
+        notificationService.notifyMember(memberId, "Kitap iade edildi. İade: " + refund);
+
+        return "İade başarılı. İade faturası ID: " + refund.getId();
+    }
 
 }
