@@ -96,6 +96,9 @@ public class LibraryService {
     public Librarian addLibrarian(String name, String email, long personId) {
         int id = IdGenerator.nextId();
         Librarian librarian = new Librarian(id, name, email, personId);
+        if(librarianRepository.findByPersonId(personId) != null && librarianRepository.findByPersonId(personId).equals(librarian)) {
+            throw new IllegalArgumentException("Bu personel ID ile zaten bir kütüphaneci mevcut: " + personId);
+        }
         librarianRepository.add(librarian);
         return librarian;
     }

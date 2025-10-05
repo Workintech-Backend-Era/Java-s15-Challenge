@@ -33,6 +33,23 @@ public class Member extends Person{
     }
 
     @Override
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(!(o instanceof Member)) return false;
+        Member other = (Member) o;
+        return  getId() == other.getId() &&
+                getPersonId() == other.getPersonId() &&
+                getName().equals(other.getName()) &&
+                getEmail().equals(other.getEmail());
+    }
+
+    @Override
+    public int hashCode(){
+        return Integer.hashCode(getId()) + Long.hashCode(getPersonId()) +
+                getName().hashCode() + getEmail().hashCode();
+    }
+
+    @Override
     public String toString() {
         return String.format("Member{id=%d, name='%s', email='%s', borrowedBooks=%s, personId=%d}",
                 getId(), getName(), getEmail(), borrowedBookIds, getPersonId());

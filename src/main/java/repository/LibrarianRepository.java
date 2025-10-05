@@ -27,6 +27,13 @@ public class LibrarianRepository {
         return librarians.values();
     }
 
+    public Librarian findByPersonId(long personId) {
+        for (Librarian l : librarians.values())
+            if (l.getPersonId() == personId)
+                return l;
+        return null;
+    }
+
     public Librarian findByName(String name) {
         for (Librarian l : librarians.values())
             if (l.getName().equalsIgnoreCase(name))

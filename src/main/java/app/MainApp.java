@@ -125,8 +125,7 @@ public class MainApp {
                         System.out.print("Ad: "); String lname = sc.nextLine();
                         System.out.print("E-mail: "); String lemail = sc.nextLine();
                         System.out.print("Personel ID: "); long personId = Long.parseLong(sc.nextLine());
-                        Librarian l = new Librarian(IdGeneratorForDemo.next(), lname, lemail,personId);
-                        librarianRepo.add(l);
+                        lib.addLibrarian(lname, lemail, personId);
                         break;
                     case "13":
                         System.out.print("Tüm kütüphaneciler:\n");
